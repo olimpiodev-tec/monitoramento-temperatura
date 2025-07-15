@@ -7,6 +7,8 @@ const temperaturas = [
 ]
 
 function simularLeitura() {
+    // Math.floor faz o arredondamento do numero gerado
+    // Math.random sempre gera um número aleatório menor que 1
     const numeroSorteado = Math.floor(Math.random() * temperaturas.length);
     const sorteio = Math.floor(numeroSorteado);
     const temp = temperaturas[sorteio].temperatura
