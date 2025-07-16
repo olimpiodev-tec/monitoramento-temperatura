@@ -1,16 +1,31 @@
-const temperaturas = [
-    {id: 1, temperatura: 22.5},
-    {id: 2, temperatura: 23.0},
-    {id: 3, temperatura: 21.8},
-    {id: 4, temperatura: 24.1},
-    {id: 5, temperatura: 22.0}
-]
+let clienteWeb = null;
 
-function simularLeitura() {
-    // Math.floor faz o arredondamento do numero gerado
-    // Math.random sempre gera um número aleatório menor que 1
-    const numeroSorteado = Math.floor(Math.random() * temperaturas.length);
-    const sorteio = Math.floor(numeroSorteado);
-    const temp = temperaturas[sorteio].temperatura
-    document.getElementById("temperature").textContent = `${temp} °C`;
-}
+const clientId = 'Esp32' + Math.floor(Math.random() * 900) + 100;
+clienteWeb = new Paho.MQTT.Client('broker.hivemq.com', 8884, clientId);
+
+const temperaturaPagina = document.getElementById('temp')
+
+clienteWeb.onMessageArrived = function(message) {
+    const payload = message.payloadString;
+    const dados = JSON.parse(payload)
+    
+    temperaturaPagina.textContent = String(dados.temperatura) + ' °C'
+    console.log('Dados: ' + payload)
+
+    setTimeout(function(){
+        temperaturaPagina.textContent = '- -'
+    }, 500)
+    
+};
+
+clienteWeb.connect({   
+    useSSL: true, 
+    onSuccess: function() {
+        console.log('A conexão com Broker foi bem sucedida')
+        clienteWeb.subscribe('senai510/temperatura/enviar');
+    },
+    onFailure: function() {
+        console.log('A conexão com Broker falhou')
+    }
+});
+
