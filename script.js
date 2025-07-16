@@ -14,7 +14,7 @@ clienteWeb.onMessageArrived = function(message) {
 
     setTimeout(function(){
         temperaturaPagina.textContent = '- -'
-    }, 500)
+    }, 2000)
     
 };
 
